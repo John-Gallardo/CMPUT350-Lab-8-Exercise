@@ -26,22 +26,20 @@ class SpriteManager {
         template <typename... Args>
         SpriteID createSprite(Args&&... args) {
             // 1. create new sprite
-            Sprite newSprite{std::forward<Args>(args)...};
+            createdSprites.emplace_back(std::forward<Args>(args)...);
 
-            // 2. register into hashmap for sprites
-            createdSprites[currSpriteID] = newSprite;
-            return currSpriteID++;  // postfix -> move onto next ID
+            // 2. return ID: should be vector's size - 1
+            return createdSprites.size() - 1;
         }
 
         // 3. get sprite
         Sprite &getSprite(SpriteID id) {
-
+            return createdSprites[id];
         }
     private:
         // maps a string to a texture. used for 1. 
         std::unordered_map<std::string, sf::Texture> registeredTextures{};
-        SpriteID currSpriteID{0};  // we start IDs at 0 and increase per created sprite
-        std::unordered_map<SpriteID, Sprite> createdSprites{};
+        std::vector<Sprite> createdSprites{};
 };
 
 #endif  // SPRITE_MANAGER_H
